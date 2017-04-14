@@ -1,6 +1,6 @@
 # Battlefield 1 x64 Multiplayer Hack
 
-Written in assembly and injected into the game's process, this hack features a small FOV aimbot, enemy outline chams with occlusion detection/coloring, enemy minimap icons, enemy gadget icons, and anti-screenshot circumvention for FairFight anti-cheat. The anti-screenshot code toggles off all the features in time to return a clean screenshot to the FairFight server. FairFight can detect traditional aimbots and other types of cheating that causes superhuman feats. This cheat was never detected during months of use.
+Written in assembly using x64dbg / Multiline Ultimate Assembler, converted into opcodes, then injected into the game's process, this hack features a small FOV aimbot, enemy outline chams with occlusion detection/coloring, enemy minimap icons, enemy gadget icons, and anti-screenshot circumvention for FairFight anti-cheat. The anti-screenshot code toggles off all the features in time to return a clean screenshot to the FairFight server. FairFight can detect traditional, large FOV aimbots and other types superhuman or rule-breaking gameplay. This cheat was never detected during months of use.
 
 In the source code, all memory offsets have been redacted to neutralize the cheat. It's not available publicly or otherwise. This is simply a demonstration of memory manipulation.
 
