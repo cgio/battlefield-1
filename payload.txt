@@ -1,0 +1,170 @@
+; ================ Battlefield 1 Hack ================
+; For demonstration only / memory offsets have been redacted to prevent use
+; Requires Battlefield 1 version REDACTED
+; Code cave start: REDACTED (inclusive)
+; Code cave end: REDACTED (inclusive)
+
+
+; ======== Variables ========
+
+<REDACTED>
+"\x01"  ; Flag to enable/disable all features (used by anti-screenshot code)
+
+
+; ======== Cham hack ========
+
+; ==== Cham colors ===
+
+<REDACTED>
+call qword ptr [rax+0x100]  ; Original instruction
+cmp byte ptr [REDACTED], 0x1  ; Anti-screenshot check
+jne @cc_disabled
+;mov dword ptr [rdi+0x10], 0x0  ; Red
+;mov dword ptr [rdi+0x14], 0x0  ; Green
+;mov dword ptr [rdi+0x18], 0x0  ; Blue
+mov dword ptr [rdi+0x1C], 0x3F800000  ; Alpha (increase visibility of red and green cham colors)
+@cc_disabled:
+jmp REDACTED
+
+<REDACTED>
+jmp REDACTED
+"\x90"
+
+; ==== Cham apply ====
+
+<REDACTED>
+cmp byte ptr [REDACTED], 0x1  ; Anti-screenshot check
+jne @ca_disabled
+; == Check health
+push rax
+mov rax, qword ptr [rcx+rdi+0x1c0]  ;m_pHealthComponent
+add rax, 0x20  ; Make rax point to m_Health (float)
+cmp dword ptr [rax], 0x80000000  ; Zero health / corpse (single-player)
+je @ca_ret_no_chams_pop_rax
+cmp dword ptr [rax], 0x0  ; Zero health (not tested)
+je @ca_ret_no_chams_pop_rax
+fldz
+fcomp dword ptr [rax]
+fnstsw ax
+test ah, 0x41  ; Negative health / corpse (multiplayer)
+pop rax
+jp @ca_ret_no_chams
+; == Check team
+push rax
+push rbx
+mov rax, qword ptr [rcx+rdi+0x260]  ; m_pPlayer
+cmp rax, 0x0  ; Prevent crash when loading map
+je @ca_ret_pop_all 
+add rax, 0x1c34
+mov al, byte ptr [rax]  ; m_TeamId
+mov rbx, REDACTED  ; Pointer to ClientGameContext this address will change when game is updated
+mov rbx, qword ptr [rbx]  ; ClientGameContext
+mov rbx, qword ptr [rbx+0x68]  ; ClientPlayerManager
+mov rbx, qword ptr [rbx+0x578] ; ClientPlayer (me)
+mov bl, byte ptr [rbx+0x1c34]  ; m_TeamId (me)
+cmp al, bl
+pop rbx
+pop rax
+je @ca_ret_no_chams  ; Same team - don't do chams
+; == Other checks
+cmp byte ptr [rcx+rdi+0x69b], 0x1   ; Check if occluded (this offset changed when game updated)
+je @ca_occluded
+mov byte ptr [rcx+rdi+0x2fc], 0xf0  ;Enable outline chams (green)
+jmp @ca_ret
+@ca_occluded:
+mov byte ptr [rcx+rdi+0x2fc], 0xf1  ;Enable outline chams (red)
+@ca_ret:
+jmp REDACTED
+@ca_ret_pop_all:
+pop rbx
+pop rax
+jmp @ca_ret
+@ca_ret_no_chams:
+mov byte ptr [rcx+rdi+0x2fc], 0x0
+jmp @ca_ret 
+@ca_ret_no_chams_pop_rax:
+pop rax
+jmp @ca_ret_no_chams
+@ca_disabled:
+mov byte ptr [rcx+rdi+0x2fc], 0x0  ; Disable cham for this player
+jmp REDACTED
+
+<REDACTED>
+jmp REDACTED
+"\x90\x90\x90"
+
+; ==== Disable squad chams ====
+<REDACTED>
+"\xEB"  ; Fixes squad cham bug (original == "\x74"), not worth changing for anti-ss / toggle
+
+
+; ======== Anti-Screenshot ========
+
+; ==== Anti-Screenshot 1 ====
+
+<REDACTED>
+mov byte ptr [REDACTED], 0x0  ; Disable
+; Original code
+mov rax, rsp
+push rdi
+sub rsp, 60
+jmp REDACTED
+
+<REDACTED>
+jmp REDACTED
+"\x90\x90\x90"
+
+; ==== Anti-Screenshot 2 ====
+
+<REDACTED>
+mov byte ptr [REDACTED], 0x0  ; Disable
+; Original code
+mov rax, rsp
+push rdi
+sub rsp, 60
+jmp REDACTED
+
+<REDACTED>
+jmp REDACTED
+"\x90\x90\x90"
+
+
+; ======== Minimap and icon hack ========
+
+; ==== Crash fix ====
+<REDACTED>
+"\xE9\xA5\x01\x00"  ; Fix unusual crash by forcing the jump (crash likely caused by patching REDACTED)
+
+; ==== Enemy players ====
+
+<REDACTED>
+mov eax, dword ptr [r8+0x58]  ; Original instruction
+dec eax  ; Original instruction
+cmp byte ptr [REDACTED], 0x1  ; Anti-screenshot check
+jne @ep_normal
+jmp @ep_normal_ret  ; Effectively a NOP to the JA instruction at REDACTED
+@ep_normal:
+cmp eax, ecx
+ja REDACTED
+@ep_normal_ret:
+jmp REDACTED
+
+<REDACTED>
+jmp REDACTED
+"\x90"
+
+; ==== Enemy vehicles, etc. ====
+
+<REDACTED>
+cmp byte ptr [REDACTED], 0x1  ; Anti-screenshot check
+jne @ev_normal
+jmp @ev_normal_ret  ; Effectively a NOP to the JNE instruction at 0x145766494
+@ev_normal:
+cmp r12d, dword ptr [rdi+0x1c34]  ; Original instruction
+jne REDACTED  ; Original instruction
+@ev_normal_ret:
+jmp REDACTED
+
+<REDACTED>
+jmp REDACTED
+"\x90"
